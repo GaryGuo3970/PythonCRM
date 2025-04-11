@@ -1,0 +1,30 @@
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CRM</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-5.3.5-dist/css/bootstrap.css' %}">
+</head>
+<body>
+    <h1>CRM Home Page</h1>
+    <h3>列表</h3>
+    <ul>
+        {% for l in list %}
+        <li>{{l}}</li>
+        {% endfor %}
+    </ul>
+    <h3>字典</h3>
+    <ul>
+        {% for k,v in dict.items %}
+        <li>{{k}}-{{v}}</li>
+        {% endfor %}
+    </ul>
+    <h3>字符串</h3>
+    <div>{{string}}</div>
+    <h3>整数</h3>
+    <div>{{int}}</div>
+    <img src="{% static 'images/p2918982408.webp' %}" />
+    <input type="button" class="btn btn-primary"  value="11" />
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Customer List</title>
+    </head>
+    <body>
+        <table border="1px solid red">
+            <tr>
+                <th>Customer ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+            </tr>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.no }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ customer.address }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

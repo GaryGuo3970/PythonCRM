@@ -22,6 +22,10 @@ from finance import views as finance_views
 
 urlpatterns = [
     path('crm', crm_views.crm),
+    path('crm/customer', crm_views.customerlist),
+    path('crm/douban', crm_views.douban),
     path('finance', finance_views.finance),
     path('admin/', admin.site.urls),
+    path('login',crm_views.login),
+    path('crm/get',crm_views.GetStudy)
 ]
