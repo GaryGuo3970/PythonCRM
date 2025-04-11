@@ -1,1 +1,3 @@
 *.pyc
+pythoncrm/crm/static/plugins/*
+pythoncrm/pythoncrm/__pycache__/*

@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Movies List</title>
+    </head>
+    <body>
+        <table border="1px solid red">
+            <tr>
+                <th>电影名</th>
+                <th>排名</th>
+                <th>地区</th>
+                <th>上映日期</th>
+                <th>评分</th>
+            </tr>
+            {% for movie in movies %}
+            <tr>
+                <td><a href={{ movie.url }}>{{ movie.title }}</a></td>
+                <td>{{ movie.rank }}</td>
+                <td>{{ movie.regions }}</td>
+                <td>{{ movie.release_date }}</td>
+                <td>{{ movie.score }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>
