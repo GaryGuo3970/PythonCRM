@@ -1,6 +1,7 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import path
+from crm.models import Customer
 
 # Create your views here.
 
@@ -147,3 +148,48 @@ def GetStudy(request):
     # 22 请求来源地址
     print(request.META.get("HTTP_REFERER"))
     return HttpResponse("GetStudy")
+
+def dbOperate(request):
+    # 1 新增数据
+    if(request.GET.get("add")):
+        customer = Customer()
+
+        #customer.no = "C0001"
+        customer.address="Shanghai"
+        customer.phone="15811112222"
+        customer.age=100
+        customer.first_name="Gary"
+        customer.last_name="Guo"
+        customer.is_active=True
+
+        customer.save()
+
+        return HttpResponse("add")
+
+    if(request.GET.get("delete")):        
+        customerToDelete = Customer.objects.filter(first_name="Gary")
+        allCustomers = Customer.objects.all()
+        customerToDelete.delete()
+        return HttpResponse("delete")
+
+    if(request.GET.get("update")):    
+        customerToDelete = Customer.objects.filter(first_name="Gary")
+        customerToDelete.update(age=101)    
+        return HttpResponse("update")
+    
+    if (request.GET.get("select")):    
+        selectCustomers = Customer.objects.filter(first_name="Gary")    
+        for c in selectCustomers:
+            print(c.no)
+            print(c.last_name)
+            print(c.age)
+        return HttpResponse(selectCustomers)    
+         
+    if (request.GET.get("first")):    
+        c = Customer.objects.filter(first_name="Gary").first()
+        print(c.no)
+        print(c.last_name)
+        print(c.age)
+        return HttpResponse(f'{c.first_name} {c.last_name}-{c.age}')    
+             
+    return HttpResponse("none")
