@@ -1,1 +1,2 @@
 *.pyc
+pythoncrm/crm/static/plugins/*
