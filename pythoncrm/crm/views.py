@@ -42,9 +42,7 @@ def crm(request):
     return render(request,"index.html")
 
 def dealerTypelist(request):   
-    model= {"dealer_types":Dealer_Type.objects.all().values()}
-    for m in model:
-        print(m)
+    model= {"dealer_types":Dealer_Type.objects.all()}
     return render(request,"basicdata/dealer_type_list.html",model)
 
 def dealerTypeAdd(request):
@@ -73,9 +71,6 @@ def dealerTypeDelete(request):
     
     if request.method == "POST":
         id = request.POST.get("id")
-        print(request.POST)
-        print(id)
-        print("post delete")
         if(id):        
             dealer_type = Dealer_Type.objects.filter(id=id)
             dealer_type.delete() 
@@ -106,10 +101,12 @@ def dealerTypeDetail(request, id):
     pass
 
 def dealerlist(request):
-    model=Dealer.objects.all().values()   
-    for m in model:
-        print(m)
-    return render(request,"basicdata/dealer_list.html",{"dealers":model})
+    model={"model":Dealer.objects.select_related('dealer_type').all().values('id', 'no', 'name', 'address', 'phone', 'email','dealer_type','is_active','is_deleted',
+        'dealer_type__id', 'dealer_type__no', 'dealer_type__name',
+        'dealer_type__description', 'dealer_type__category')}
+    
+    model={"model":Dealer.objects.select_related('dealer_type').all()}
+    return render(request,"basicdata/dealer_list.html",model)
 
 def departmentlist(request):
     model=Department.objects.all().values

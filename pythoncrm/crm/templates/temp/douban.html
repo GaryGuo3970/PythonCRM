@@ -1,25 +1,353 @@
-<html>
-    <head>
-        <title>Movies List</title>
-    </head>
-    <body>
-        <table border="1px solid red">
-            <tr>
-                <th>电影名</th>
-                <th>排名</th>
-                <th>地区</th>
-                <th>上映日期</th>
-                <th>评分</th>
-            </tr>
-            {% for movie in movies %}
-            <tr>
-                <td><a href={{ movie.url }}>{{ movie.title }}</a></td>
-                <td>{{ movie.rank }}</td>
-                <td>{{ movie.regions }}</td>
-                <td>{{ movie.release_date }}</td>
-                <td>{{ movie.score }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </body>
-</html>
+{% extends 'layout/layout.html' %}
+{% block content %}
+<div class="container-fluid">
+    <!-- 顶部统计卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">今日销售额</h6>
+                            <h3 class="mb-0">¥12,568</h3>
+                            <span class="text-success small">↑12.5%</span>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-shopping-cart text-primary fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">会员总数</h6>
+                            <h3 class="mb-0">1,258</h3>
+                            <span class="text-success small">↑5.2%</span>
+                        </div>
+                        <div class="bg-success bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-users text-success fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">新增会员</h6>
+                            <h3 class="mb-0">32</h3>
+                            <span class="text-success small">↑8.3%</span>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-user-plus text-warning fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">会员积分</h6>
+                            <h3 class="mb-0">58,742</h3>
+                            <span class="text-danger small">↓2.1%</span>
+                        </div>
+                        <div class="bg-info bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-coins text-info fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图表行 -->
+    <div class="row mb-4">
+        <!-- 销售趋势图 -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">近30天销售趋势</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            本月
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">本周</a></li>
+                            <li><a class="dropdown-item" href="#">本月</a></li>
+                            <li><a class="dropdown-item" href="#">本季</a></li>
+                            <li><a class="dropdown-item" href="#">本年</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 会员等级分布 -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">会员等级分布</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="memberLevelChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 会员积分排行和最近交易 -->
+    <div class="row mb-4">
+        <!-- 会员积分排行 -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">会员积分排行</h5>
+                    <a href="#" class="btn btn-sm btn-outline-primary">查看全部</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>会员姓名</th>
+                                    <th>手机号</th>
+                                    <th>等级</th>
+                                    <th>积分</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>张伟</td>
+                                    <td>138****1234</td>
+                                    <td><span class="badge bg-danger">钻石</span></td>
+                                    <td>12,580</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>李娜</td>
+                                    <td>139****5678</td>
+                                    <td><span class="badge bg-warning">黄金</span></td>
+                                    <td>9,750</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>王芳</td>
+                                    <td>137****9012</td>
+                                    <td><span class="badge bg-warning">黄金</span></td>
+                                    <td>8,320</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>赵强</td>
+                                    <td>136****3456</td>
+                                    <td><span class="badge bg-primary">白银</span></td>
+                                    <td>6,540</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>刘洋</td>
+                                    <td>135****7890</td>
+                                    <td><span class="badge bg-primary">白银</span></td>
+                                    <td>5,210</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 最近交易 -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">最近交易</h5>
+                    <a href="#" class="btn btn-sm btn-outline-primary">查看全部</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>订单号</th>
+                                    <th>会员</th>
+                                    <th>金额</th>
+                                    <th>时间</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ORD20240515001</td>
+                                    <td>张伟</td>
+                                    <td>¥1,258.00</td>
+                                    <td>2024-05-15 14:30</td>
+                                    <td><span class="badge bg-success">已完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ORD20240514002</td>
+                                    <td>李娜</td>
+                                    <td>¥899.00</td>
+                                    <td>2024-05-14 11:20</td>
+                                    <td><span class="badge bg-success">已完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ORD20240514001</td>
+                                    <td>王芳</td>
+                                    <td>¥1,568.00</td>
+                                    <td>2024-05-14 09:45</td>
+                                    <td><span class="badge bg-success">已完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ORD20240513003</td>
+                                    <td>赵强</td>
+                                    <td>¥658.00</td>
+                                    <td>2024-05-13 16:10</td>
+                                    <td><span class="badge bg-success">已完成</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ORD20240513002</td>
+                                    <td>刘洋</td>
+                                    <td>¥1,298.00</td>
+                                    <td>2024-05-13 13:25</td>
+                                    <td><span class="badge bg-success">已完成</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 图表JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// 销售趋势图
+const salesCtx = document.getElementById('salesChart').getContext('2d');
+const salesChart = new Chart(salesCtx, {
+    type: 'line',
+    data: {
+        labels: Array.from({length: 30}, (_, i) => `${i+1}日`),
+        datasets: [{
+            label: '销售额',
+            data: [1200, 1900, 1500, 2000, 1800, 2200, 2400, 2100, 2300, 2500, 
+                   2700, 2900, 2600, 2800, 3000, 3200, 3500, 3800, 4000, 4200, 
+                   4500, 4700, 5000, 5200, 5500, 5800, 6000, 6200, 6500, 6800],
+            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    drawBorder: false
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+
+// 会员等级分布图
+const memberLevelCtx = document.getElementById('memberLevelChart').getContext('2d');
+const memberLevelChart = new Chart(memberLevelCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['普通会员', '白银会员', '黄金会员', '钻石会员'],
+        datasets: [{
+            data: [450, 300, 200, 100],
+            backgroundColor: [
+                'rgba(108, 117, 125, 0.8)',
+                'rgba(13, 110, 253, 0.8)',
+                'rgba(255, 193, 7, 0.8)',
+                'rgba(220, 53, 69, 0.8)'
+            ],
+            borderColor: [
+                'rgba(108, 117, 125, 1)',
+                'rgba(13, 110, 253, 1)',
+                'rgba(255, 193, 7, 1)',
+                'rgba(220, 53, 69, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+            }
+        },
+        cutout: '70%'
+    }
+});
+</script>
+
+<style>
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #f8f9fa;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+    border-top: none;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 10px;
+}
+
+.bg-opacity-10 {
+    background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+}
+</style>
+{% endblock %}

@@ -52,9 +52,9 @@ class Dealer_Type(ModelBase):
 
     def get_category_display(self):
         CATEGORY_CHOICES = {
-            1: '2S',
-            2: '3S',
-            3: '4S'
+            1: '2S店',
+            2: '3S店',
+            3: '4S店'
         }
         return CATEGORY_CHOICES.get(self.category, str(self.category))
 
