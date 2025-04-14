@@ -1,0 +1,121 @@
+{% extends 'layout/layout.html' %}
+{% block content %}
+<div class="container-fluid">
+    <!-- 标题和返回按钮 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5>添加经销商类型</h5>
+        <a href="/crm/dealertype" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>返回列表
+        </a>
+    </div>
+
+    <!-- 表单卡片 -->
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="needs-validation" novalidate method="post" action="dealertypedelete">
+                {% csrf_token %}
+                
+                <div class="row mb-3">
+                    <div class="col-md-6" hidden>
+                        <label for="id" class="form-label">ID</label>
+                        <input type="text" class="form-control" id="id" name="id" value="{{model.id}}" required>
+                    </div>                    
+                    <div class="col-md-6">
+                        <label for="no" class="form-label">编号</label>
+                        <input type="text" class="form-control" id="no" name="no" disabled value="{{model.no}}" required>
+                        <div class="invalid-feedback">
+                            请输入编号
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="name" class="form-label">名称</label>
+                        <input type="text" class="form-control" id="name" name="name" disabled value="{{model.name}}" required>
+                        <div class="invalid-feedback">
+                            请输入名称
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="category" class="form-label">类别</label>
+                        <select class="form-select" id="category" name="category" disabled required>
+                            <option value="" {% if not model.category %}selected{% endif %}>请选择类别</option>
+                            <option value="1" {% if model.category == 1 %}selected{% endif %}>2S</option>
+                            <option value="2" {% if model.category == 2 %}selected{% endif %}>3S</option>
+                            <option value="3" {% if model.category == 3 %}selected{% endif %}>4S</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            请选择类别
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label for="description" class="form-label">描述</label>
+                        <textarea class="form-control" id="description" name="description" disabled  rows="1">{{model.description}}</textarea>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="/crm/dealertype" class="btn btn-secondary me-md-2">
+                        <i class="fas fa-times me-1"></i>取消
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <a class="btn btn-danger btn-sm" >确认删除?</a>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 表单验证脚本 -->
+<script>
+// 表单验证示例
+(function () {
+    'use strict'
+    
+    // 获取所有需要验证的表单
+    var forms = document.querySelectorAll('.needs-validation')
+    
+    // 循环并阻止提交
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                
+                form.classList.add('was-validated')
+            }, false)
+        })
+})()
+</script>
+
+<style>
+/* 自定义样式 */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.invalid-feedback {
+    font-size: 0.85rem;
+}
+
+.btn {
+    min-width: 100px;
+}
+</style>
+{% endblock %}

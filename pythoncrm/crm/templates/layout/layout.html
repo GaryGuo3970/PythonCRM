@@ -1,0 +1,352 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>现代企业官网</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block css %}{% endblock %}
+    <!-- 自定义CSS -->
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --light-color: #f8f9fa;
+        }
+
+        body {
+            padding-top: 56px;
+        }
+
+        /* 侧边菜单样式 */
+        .sidebar {
+            height: calc(100vh - 56px);
+            position: fixed;
+            top: 56px;
+            left: 0;
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: white;
+            overflow-y: auto;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        /* 轮播图样式 */
+        .carousel-container {
+            height: 400px;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-item img {
+            object-fit: cover;
+            height: 400px;
+            width: 100%;
+        }
+
+        .carousel-caption {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            padding: 20px;
+            bottom: 40px;
+            left: 10%;
+            right: 10%;
+        }
+
+        /* 子菜单样式 */
+        .submenu {
+            padding-left: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            list-style: none;
+        }
+
+        .submenu .nav-link {
+            padding: 8px 20px;
+            color: rgba(255, 255, 255, 0.7);
+            border-left: none;
+        }
+
+        .submenu .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* 下拉图标动画 */
+        .dropdown-icon {
+            float: right;
+            transition: transform 0.3s;
+            margin-top: 4px;
+        }
+
+        .has-submenu.active .dropdown-icon {
+            transform: rotate(90deg);
+        }
+
+        /* 子菜单项缩进 */
+        .submenu .nav-item {
+            margin-left: 10px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .sidebar {
+                left: -250px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .toggle-sidebar {
+                display: block !important;
+            }
+        }
+
+        /* 卡片悬停效果 */
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <button class="navbar-toggler me-2 toggle-sidebar d-lg-none" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-rocket me-2"></i>企业LOGO
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/"><i class="fas fa-home"></i> 首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-shopping-bag"></i> 产品</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-info-circle"></i> 关于</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="fas fa-envelope"></i> 联系</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="fas fa-user"></i>
+                            {% if request.session_username %}
+                            {{ request.session_username }}
+                            {% else %}
+                            账户
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if request.session_username %}
+                            <li><a class="dropdown-item" href="/user/profile"><i
+                                        class="fas fa-user-circle me-2"></i>用户信息</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>注销</a>
+                            </li>
+                            {% else %}
+                            <li><a class="dropdown-item" href="/login"><i class="fas fa-sign-in-alt me-2"></i>登录</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 侧边菜单栏 -->
+    <div class="sidebar">
+        <div class="p-3">
+            <ul class="nav flex-column">
+                <!-- 控制面板 - 无子菜单 -->
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-tachometer-alt"></i> 控制面板
+                    </a>
+                </li>
+
+                <!-- 基础数据 - 带子菜单 -->
+                <li class="nav-item has-submenu">
+                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#userSubmenu">
+                        <i class="fas fa-users"></i> 基础数据
+                        <i class="fas fa-angle-right dropdown-icon"></i>
+                    </a>
+                    <ul class="submenu collapse" id="userSubmenu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/crm/dealertype">
+                                <i class="fas fa-list me-2"></i> 经销商类型
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/crm/dealer">
+                                <i class="fas fa-user-plus me-2"></i> 经销商
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/crm/department">
+                                <i class="fas fa-user-shield me-2"></i> 部门
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 产品管理 - 带子菜单 -->
+                <li class="nav-item has-submenu">
+                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#productSubmenu">
+                        <i class="fas fa-box-open"></i> 会员管理
+                        <i class="fas fa-angle-right dropdown-icon"></i>
+                    </a>
+                    <ul class="submenu collapse" id="productSubmenu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-list me-2"></i> 产品列表
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-plus-circle me-2"></i> 添加产品
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-tags me-2"></i> 分类管理
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 数据分析 - 无子菜单 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-chart-line"></i> 业务数据
+                    </a>
+                </li>
+
+                <!-- 系统设置 - 带子菜单 -->
+                <li class="nav-item has-submenu">
+                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#settingsSubmenu">
+                        <i class="fas fa-cog"></i> 卡券管理
+                        <i class="fas fa-angle-right dropdown-icon"></i>
+                    </a>
+                    <ul class="submenu collapse" id="settingsSubmenu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-globe me-2"></i> 系统参数
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-database me-2"></i> 数据备份
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-history me-2"></i> 操作日志
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- 文档中心和帮助中心 - 无子菜单 -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-file-alt"></i> 会员积分
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-question-circle"></i> 帮助中心
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 自定义JS -->
+    <script>
+        // 侧边菜单切换
+        document.querySelector('.toggle-sidebar').addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+        // 子菜单点击处理
+        document.querySelectorAll('.has-submenu > .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // 防止链接跳转
+                if (this.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
+                
+                // 切换父项的active类
+                this.parentElement.classList.toggle('active');
+            });
+        });
+        // 响应式调整
+        function handleResize() {
+            if (window.innerWidth > 992) {
+                document.querySelector('.sidebar').classList.remove('active');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+    </script>
+    {% block js %}{% endblock %}
+</body>
+
+</html>

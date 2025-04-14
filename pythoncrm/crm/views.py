@@ -1,7 +1,8 @@
+from functools import wraps
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import path
-from crm.models import Customer
+from crm.models import Admin, Customer, Dealer, Dealer_Type,Department
 
 # Create your views here.
 
@@ -12,26 +13,107 @@ def login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-        if username == "admin" and password == "123456":
-            return redirect("/crm")
+        if Admin.objects.filter(username=username, password=password).exists():
+            request.session["user_info"]={
+                "username":username,
+                "password":password
+            }
+            return redirect("/")
         else:
             error={
                 "error":"用户名或密码错误！"
             }
             return render(request, "login/login.html",error)
-
+        
+def logout(request):
+    request.session.flush()  # 清除session
+    return redirect("/")
+        
+def login_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.session.get("user_info"):
+            return view_func(request, *args, **kwargs)
+        else:
+            return redirect("/login")
+    return _wrapped_view
 
 def crm(request):
-    data_string ="test string"
-    data_list = ["C#","Java","Go","Python"]
-    data_dict = {"key1":"value1","key2":"value2"}
-    model={
-        "string":data_string,
-        "list":data_list,
-        "dict":data_dict,
-        "int": 123,
-    }
-    return render(request,"index.html",model)
+    return render(request,"index.html")
+
+def dealerTypelist(request):   
+    model= {"dealer_types":Dealer_Type.objects.all().values()}
+    for m in model:
+        print(m)
+    return render(request,"basicdata/dealer_type_list.html",model)
+
+def dealerTypeAdd(request):
+    if request.method == "GET":
+        return render(request,"basicdata/dealer_type_add.html")
+    
+    if request.method == "POST":
+        dealer_type = Dealer_Type()
+        dealer_type.no = request.POST.get("no")
+        dealer_type.name = request.POST.get("name")
+        dealer_type.description = request.POST.get("description")
+        dealer_type.category = request.POST.get("category")
+        dealer_type.save()
+        return redirect("/crm/dealertype")
+    
+def dealerTypeDelete(request):
+    if request.method == "GET":
+        id = request.GET.get("id")
+        if(id):
+            dealer_type = Dealer_Type.objects.filter(id=id).first()
+            model = {
+                "model":dealer_type
+            }
+            return render(request,"basicdata/dealer_type_delete.html",model)
+        
+    
+    if request.method == "POST":
+        id = request.POST.get("id")
+        print(request.POST)
+        print(id)
+        print("post delete")
+        if(id):        
+            dealer_type = Dealer_Type.objects.filter(id=id)
+            dealer_type.delete() 
+        return redirect("/crm/dealertype")
+
+def dealerTypeEdit(request):
+    if request.method == "GET":
+        id = request.GET.get("id")
+        if(id):
+            dealer_type = Dealer_Type.objects.filter(id=id).first()
+            model = {
+                "model":dealer_type
+            }
+            return render(request,"basicdata/dealer_type_edit.html",model)
+        
+    if request.method == "POST":
+        id = request.POST.get("id")
+        dealer_type = Dealer_Type.objects.filter(id=id).first()
+        dealer_type.no = request.POST.get("no")
+        dealer_type.name = request.POST.get("name")
+        dealer_type.description = request.POST.get("description")
+        dealer_type.category = request.POST.get("category")
+        dealer_type.save()
+    
+    return redirect("/crm/dealertype")
+
+def dealerTypeDetail(request, id):
+    pass
+
+def dealerlist(request):
+    model=Dealer.objects.all().values()   
+    for m in model:
+        print(m)
+    return render(request,"basicdata/dealer_list.html",{"dealers":model})
+
+def departmentlist(request):
+    model=Department.objects.all().values
+    return render(request,"basicdata/department_list.html",{"department":model})   
 
 def customerlist(request):
     data_customers=[

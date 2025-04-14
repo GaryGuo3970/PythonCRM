@@ -21,12 +21,25 @@ from crm import views as crm_views
 from finance import views as finance_views
 
 urlpatterns = [
-    path('crm', crm_views.crm),
+    ## 管理
+    path('', crm_views.crm),   
+    path('/', crm_views.crm),   
+    path('crm', crm_views.crm),    
+    path('login',crm_views.login),
+    path('logout', crm_views.logout),
+    
+    ## 基础数据
+    path('crm/dealertype', crm_views.dealerTypelist),
+    path('crm/dealertypeadd', crm_views.dealerTypeAdd),    
+    path('crm/dealertypedelete', crm_views.dealerTypeDelete),
+    path('crm/dealertypeedit', crm_views.dealerTypeEdit),
+    path('crm/dealer', crm_views.dealerlist),
+    path('crm/department', crm_views.departmentlist),
+
     path('crm/customer', crm_views.customerlist),
     path('crm/douban', crm_views.douban),
     path('crm/db', crm_views.dbOperate),
     path('finance', finance_views.finance),
     path('admin/', admin.site.urls),
-    path('login',crm_views.login),
     path('crm/get',crm_views.GetStudy)
 ]

@@ -1,0 +1,30 @@
+{% extends 'layout/layout.html' %}
+{% block content %}
+<h5>经销商类型</h5>
+<div>
+    <a class="btn btn-primary btn-sm" href="dealertypeadd">添加</a>
+</div>
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>编号</th>
+        <th>名称</th>
+        <th>类别</th>
+        <th>描述</th>
+        <th>操作</th>
+    </tr>
+    {% for type in dealer_types %}
+    <tr>
+        <td>{{ type.no }}</td>
+        <td>{{ type.name }}</td>
+        <td>{{ type.category }}</td>
+        <td>{{ type.description }}</td>
+        <td>
+            <a class="btn btn-secondary btn-sm" href="dealertypeedit?id={{ type.id}}">编辑</a>
+            <a class="btn btn-danger btn-sm" href="dealertypedelete?id={{ type.id}}">删除</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+
+{% endblock %}
