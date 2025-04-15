@@ -238,9 +238,9 @@ def customerdelete(request):
     customer = Customer.objects.filter(id=id).first()
     if request.method == "GET":
         if(id):
-            form = dealer_ModelForm(instance=customer)  
+            form = customer_ModelForm(instance=customer)  
             model = {
-                "title":"客户",
+                "title":f"{"客户"} {customer.first_name} {customer.last_name}",
                 "form":form
             }
             return render(request,"basicdata/customer_delete.html",model)        
