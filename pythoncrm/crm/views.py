@@ -3,6 +3,10 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import path
 from crm.models import Admin, Customer, Dealer, Dealer_Type,Department
+from crm.viewmodel.dealer_vm import dealer_ModelForm, dealer_vm
+from crm.viewmodel.customer_vm import customer_ModelForm
+from crm.viewmodel.salesheader_vm import salesheader_ModelForm
+from crm import models
 
 # Create your views here.
 
@@ -108,41 +112,143 @@ def dealerlist(request):
     model={"model":Dealer.objects.select_related('dealer_type').all()}
     return render(request,"basicdata/dealer_list.html",model)
 
+def dealerAdd(request):
+    if request.method == "GET":
+        dealers = Dealer.objects.all()
+        vm = dealer_vm()
+        vm = dealer_ModelForm()
+        model = {
+            "dealers":dealers,
+            "dealer_vm":vm
+        }
+        return render(request,"basicdata/dealer_add.html",model)
+    
+    if request.method == "POST":
+        form = dealer_ModelForm(data=request.POST)
+        if form.is_valid():
+            # data = form.cleaned_data
+            # dealertype = data["dealer_type"]
+            # models.Dealer.objects.create(
+            #     no=data['no'],
+            #     name= data['name'],
+            #     dealer_type = dealertype
+            # )  
+            form.save()          
+            return redirect(dealerlist)
+        else:
+            return render(request,"basicdata/dealer_add.html",{"dealer_vm":form})
+        
+def dealerEdit(request):    
+    id = request.GET.get("id")        
+    dealer = Dealer.objects.filter(id=id).first()
+
+    if request.method == "GET":
+        if(id):
+            vm = dealer_ModelForm(instance=dealer)
+            model = {
+                "model":dealer,
+                "dealer_vm":vm
+            }
+            return render(request,"basicdata/dealer_edit.html",model)
+        
+    if request.method == "POST":
+        form = dealer_ModelForm(data=request.POST, instance=dealer)
+        if form.is_valid():
+            form.save()
+            return redirect(dealerlist)
+        else:
+            return render(request,"basicdata/dealer_edit.html",{"dealer_vm":form})
+        
+def dealerDelete(request):    
+    id = request.GET.get("id")        
+    dealer = Dealer.objects.filter(id=id).first()
+    if request.method == "GET":
+        if(id):
+            vm = dealer_ModelForm(instance=dealer)  
+            model = {
+                "model":dealer,
+                "dealer_vm":vm
+            }
+            return render(request,"basicdata/dealer_delete.html",model)        
+    
+    if request.method == "POST":
+        if(id):        
+            dealer.delete() 
+        return redirect("/crm/dealer")
+
 def departmentlist(request):
     model=Department.objects.all().values
     return render(request,"basicdata/department_list.html",{"department":model})   
 
-def customerlist(request):
-    data_customers=[
-        {
-            "no":"C001",
-            "name":"Porsche",
-            "email":"xxx@xxx.com",
-            "phone":"15811112222",
-            "address":"上海",
-            "age":100
-        },
-        {
-            "no":"C001",
-            "name":"Porsche",
-            "email":"xxx@xxx.com",
-            "phone":"15811112222",
-            "address":"上海",
-            "age":100
-        },
-        {
-            "no":"C001",
-            "name":"Porsche",
-            "email":"xxx@xxx.com",
-            "phone":"15811112222",
-            "address":"上海",
-            "age":100
-        }
-    ]
+def customerlist(request):    
+    customers =Customer.objects.all().order_by("-id")
     model={
-        "customers":data_customers
+        "customers":customers
     }
-    return render(request,"temp/customerlist.html",model)
+    return render(request,"basicdata/customer_list.html",model)
+
+def customeradd(request):
+    if request.method == "GET":
+        form = customer_ModelForm()
+        model = {
+            "title":"客户",
+            "form":form
+        }
+        return render(request,"basicdata/customer_add.html",model)
+    
+    if request.method == "POST":
+        form = customer_ModelForm(data=request.POST)
+        if form.is_valid():
+            form.save()          
+            return redirect(customerlist)
+        else:
+            model = {
+                "title":"客户",
+                "form":form
+            }
+            return render(request,"basicdata/customer_add.html",model)
+        
+def customeredit(request):
+    id = request.GET.get("id")        
+    customer = Customer.objects.filter(id=id).first()
+
+    if request.method == "GET":
+        if(id):
+            form = customer_ModelForm(instance=customer)
+            model = {
+                "title":"客户",
+                "form":form
+            }
+            return render(request,"basicdata/customer_edit.html",model)
+        
+    if request.method == "POST":
+        form = customer_ModelForm(data=request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect(customerlist)
+        else:
+            model = {
+                "title":"客户",
+                "form":form
+            }            
+            return render(request,"basicdata/customer_edit.html",model)    
+        
+def customerdelete(request):
+    id = request.GET.get("id")        
+    customer = Customer.objects.filter(id=id).first()
+    if request.method == "GET":
+        if(id):
+            form = dealer_ModelForm(instance=customer)  
+            model = {
+                "title":"客户",
+                "form":form
+            }
+            return render(request,"basicdata/customer_delete.html",model)        
+    
+    if request.method == "POST":
+        if(id):        
+            customer.delete() 
+        return redirect("/crm/customer")    
 
 def douban(request):
     import requests

@@ -1,0 +1,85 @@
+{% extends 'layout/layout.html' %}
+{% block content %}
+<div class="container-fluid">
+    <!-- 标题和返回按钮 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5>编辑经销商</h5>
+        <a href="/crm/dealer" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>返回列表
+        </a>
+    </div>
+
+    <!-- 表单卡片 -->
+    <div class="card">
+        <div class="card-body">
+            <!-- <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                {%  for field in dealer_vm %}
+                    {{ field}}
+                {% endfor %}                
+                <button>test</button>
+            </form> -->
+            <form method="post" class="form-horizontal" novalidate>
+                {% csrf_token %}
+                {%  for field in dealer_vm %}
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label">{{ field.label }}</label>
+                        <div class="col-sm-10">{{ field }} {{field.errors.0}}</div>
+                    </div>
+                {% endfor %}                
+                <input type="submit" value="提交">
+            </form>
+        </div>
+    </div>
+    
+</div>
+
+<!-- 表单验证脚本 -->
+<script>
+// 表单验证示例
+(function () {
+    'use strict'
+    
+    // 获取所有需要验证的表单
+    var forms = document.querySelectorAll('.needs-validation')
+    
+    // 循环并阻止提交
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                
+                form.classList.add('was-validated')
+            }, false)
+        })
+})()
+</script>
+
+<style>
+/* 自定义样式 */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.invalid-feedback {
+    font-size: 0.85rem;
+}
+
+.btn {
+    min-width: 100px;
+}
+</style>
+{% endblock %}

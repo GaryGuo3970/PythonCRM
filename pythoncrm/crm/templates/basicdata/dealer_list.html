@@ -2,7 +2,7 @@
 {% block content %}
 <h5>经销商</h5>
 <div>
-    <a class="btn btn-primary btn-sm">添加</a>
+    <a class="btn btn-primary btn-sm" href="dealeradd">添加</a>
 </div>
 <table class="table table-bordered table-hover">
     <tr>
@@ -27,8 +27,8 @@
         <td>{{ m.is_active }}</td>        
         <td>{{ m.is_deleted }}</td>  
         <td>
-            <a class="btn btn-secondary btn-sm">编辑</a>
-            <a class="btn btn-danger btn-sm">删除</a>
+            <a class="btn btn-secondary btn-sm" href="dealeredit?id={{ m.id}}">编辑</a>
+            <a class="btn btn-danger btn-sm" href="dealerdelete?id={{m.id}}">删除</a>
         </td>
     </tr>
     {% endfor %}

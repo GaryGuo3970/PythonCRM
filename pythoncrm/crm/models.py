@@ -3,23 +3,23 @@ from django.db import models
 # Create your models here.
 class ModelBase(models.Model):
     """ 模型基类 """
-    created_at = models.DateTimeField(auto_now_add=True,verbose_name="创建时间")
-    updated_at = models.DateTimeField(auto_now=True,verbose_name="更新时间")
-    is_active = models.BooleanField(default=True,verbose_name="是否激活")
-    is_deleted = models.BooleanField(default=False,verbose_name="是否删除")
+    created_at = models.DateTimeField(auto_now_add=True,verbose_name="创建时间",null=True, blank=True,)
+    updated_at = models.DateTimeField(auto_now=True,verbose_name="更新时间",null=True, blank=True,)
+    is_active = models.BooleanField(default=True,verbose_name="是否激活",null=True, blank=True,)
+    is_deleted = models.BooleanField(default=False,verbose_name="是否删除",null=True, blank=True,)
 
     class Meta:
         abstract = True
         verbose_name = "模型基类"
 
 class Customer(ModelBase):
-    no= models.CharField(max_length=10, unique=True,validators=[], blank=True, null=True,verbose_name="客户编号")
-    first_name = models.CharField(max_length=100,validators=[], blank=True, null=True,verbose_name="名")
-    last_name = models.CharField(max_length=100,verbose_name="姓")
-    email = models.EmailField(validators=[], blank=True, null=True,verbose_name="邮箱")
-    phone = models.CharField(max_length=20, blank=True, null=True,verbose_name="电话")
-    address = models.TextField(blank=True, null=True,verbose_name="地址")
-    age =models.IntegerField(blank=True, null=True,verbose_name="年龄")
+    no= models.CharField(max_length=10, unique=True,validators=[], verbose_name="客户编号")
+    first_name = models.CharField(max_length=100,validators=[], verbose_name="名",null=True, blank=True,default="")
+    last_name = models.CharField(max_length=100,verbose_name="姓",null=True, blank=True,default="")
+    email = models.EmailField(validators=[], verbose_name="邮箱",null=True, blank=True,default="")
+    phone = models.CharField(max_length=20, verbose_name="电话",null=True, blank=True,default="")
+    address = models.TextField(verbose_name="地址",null=True, blank=True,default="")
+    age =models.IntegerField(verbose_name="年龄",null=True, blank=True,default=0)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -27,12 +27,14 @@ class Customer(ModelBase):
 class SalesHeader(ModelBase):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE,related_name="sales_headers",verbose_name="客户")
     order_number = models.CharField(max_length=20, unique=True,verbose_name="订单号")
-    currency = models.CharField(max_length=3, default="",verbose_name="货币")
-    sales_date = models.DateField(verbose_name="销售日期")
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2,verbose_name="总金额")
+    currency = models.CharField(max_length=3, verbose_name="货币",null=True, blank=True,default="")
+    sales_date = models.DateField(verbose_name="销售日期",null=True, blank=True,default="")
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2,verbose_name="总金额",null=True, blank=True,default=0.00)
+    status = models.SmallIntegerField(choices=[(1, '打开'), (2, '完成'), (3, '取消')],verbose_name="状态",default=1)
+    payment_status = models.CharField(max_length=20, choices=[('paid', '已支付'), ('unpaid', '未支付')],verbose_name="支付状态",default="unpaid")
 
     def __str__(self):
-        return f"SalesHeader {self.id} - {self.customer}"
+        return f"SalesHeader {self.id} - {self.order_number}"
 
 class Admin(ModelBase):
     """ 管理员表 """
@@ -57,6 +59,9 @@ class Dealer_Type(ModelBase):
             3: '4S店'
         }
         return CATEGORY_CHOICES.get(self.category, str(self.category))
+    
+    def __str__(self):
+        return f"{self.id} - {self.name}"
 
 class Dealer(ModelBase):
     """ 经销商表 """
