@@ -180,10 +180,21 @@ def departmentlist(request):
     model=Department.objects.all().values
     return render(request,"basicdata/department_list.html",{"department":model})   
 
-def customerlist(request):    
-    customers =Customer.objects.all().order_by("-id")
+def customerlist(request):        
+    field_list=[("first_name__contains","名"),("last_name__contains","姓"),("email__contains","邮箱"),("phone__contains","电话")]
+    condition={}
+    key = request.GET.get('key')
+    field=request.GET.get('field')
+    print(field)
+    if key:
+        condition[field] = key.strip()    
+    #customers =Customer.objects.all().order_by("-id")
+    customers =Customer.objects.filter(**condition).order_by("-id")
     model={
-        "customers":customers
+        "customers":customers,
+        "key":key,
+        "field":field,
+        "field_list":field_list,
     }
     return render(request,"basicdata/customer_list.html",model)
 

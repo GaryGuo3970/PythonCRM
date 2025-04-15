@@ -1,8 +1,32 @@
 {% extends 'layout/layout.html' %}
 {% block content %}
 <h5>客户</h5>
-<div>
-    <a class="btn btn-primary btn-sm" href="customeradd">添加</a>
+<div style="margin-bottom: 5px;">
+    <form method="get" class="form-inline">
+        <div class="row">
+            <div class="col-sm-5">
+                <a class="btn btn-primary btn-sm" href="customeradd">添加</a>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="field">
+                    {% for f in field_list %}
+                        <option value="{{f.0}}" {% if f.0 == field %}selected{% endif %}>{{f.1}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-5">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="请输入搜索条件" aria-describedby="button-addon2"
+                        name="key" value="{{key}}">
+                    <div class="input-group-btn">
+                        <button class="btn btn-secondary" type="submit">
+                            <span class="glyphicon glyphicon-search">搜索</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 <table class="table table-bordered table-hover">
     <thead>
@@ -11,8 +35,8 @@
         <th>地址</th>
         <th>电话</th>
         <th>邮箱</th>
-        <th>年龄</th>    
-        <th>操作</th>        
+        <th>年龄</th>
+        <th>操作</th>
     </thead>
     {% for m in customers %}
     <tr>
@@ -21,12 +45,13 @@
         <td>{{ m.address }}</td>
         <td>{{ m.phone }}</td>
         <td>{{ m.email }}</td>
-        <td>{{ m.age }}</td>                <td>
+        <td>{{ m.age }}</td>
+        <td>
             <a class="btn btn-secondary btn-sm" href="customeredit?id={{ m.id}}">编辑</a>
             <a class="btn btn-danger btn-sm" href="customerdelete?id={{m.id}}">删除</a>
         </td>
     </tr>
     {% endfor %}
-</div>
-
+    </div>
+</table>
 {% endblock %}
