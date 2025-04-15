@@ -164,10 +164,10 @@ def dealerDelete(request):
     dealer = Dealer.objects.filter(id=id).first()
     if request.method == "GET":
         if(id):
-            vm = dealer_ModelForm(instance=dealer)  
+            form = dealer_ModelForm(instance=dealer)  
             model = {
                 "model":dealer,
-                "dealer_vm":vm
+                "form":form
             }
             return render(request,"basicdata/dealer_delete.html",model)        
     
